@@ -22,17 +22,21 @@ Download the CSV and place it in the project root as:
 NYPD_Complaint_Data_Historic.csv
 ```
 
+> **Note on Docker:** The full 2.5GB dataset cannot be included in the container. We provide `truncate.py` which generates a 50,000-row sample (`NYPD_sample.csv`) used for Docker reproducibility. The outputs in the main notebook were generated using the full dataset.
+
 ---
 
 ## Project Structure
 
 ```
 urban-pulse/
-├── urban_pulse.ipynb       # Main notebook
-├── requirements.txt        # Python dependencies
-├── Dockerfile              # Docker setup for reproducibility
-├── README.md               # This file
-└── output/                 # Generated visualizations (created on run)
+├── urban_pulse.ipynb                # Main notebook (full dataset outputs)
+├── NYPD_sample.csv                  # 50k-row sample for Docker
+├── truncate.py                      # Script to generate sample from full CSV
+├── requirements.txt                 # Python dependencies
+├── Dockerfile                       # Docker setup for reproducibility
+├── README.md                        # This file
+└── output/                          # Generated on Docker run
 ```
 
 ---
@@ -59,9 +63,14 @@ Upload the notebook and the dataset CSV to your Google Drive, then open the note
 # Build the image
 docker build -t urban-pulse .
 
-# Run the container
+# Run the container (Windows)
+docker run -v ${PWD}/output:/app/output urban-pulse
+
+# Run the container (Mac/Linux)
 docker run -v $(pwd)/output:/app/output urban-pulse
 ```
+
+The container uses `NYPD_sample.csv` (50k rows) and saves the executed notebook to the `/output` folder.
 
 ---
 
